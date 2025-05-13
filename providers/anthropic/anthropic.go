@@ -3,8 +3,8 @@ package anthropic
 import (
 	"context"
 
-	"modelgene"
-	"modelgene/pkg/types"
+	"github.com/connectedtechco/modelgene"
+	"github.com/connectedtechco/modelgene/pkg/types"
 
 	"github.com/anthropics/anthropic-sdk-go"
 )

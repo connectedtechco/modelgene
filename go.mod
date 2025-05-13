@@ -1,4 +1,4 @@
-module modelgene
+module github.com/connectedtechco/modelgene
 
 go 1.24.0
 

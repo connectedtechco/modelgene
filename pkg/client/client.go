@@ -3,10 +3,10 @@ package client
 import (
 	"context"
 
-	"modelgene"
-	"modelgene/pkg/types"
-	"modelgene/providers/anthropic"
-	"modelgene/providers/ollama"
+	"github.com/connectedtechco/modelgene"
+	"github.com/connectedtechco/modelgene/pkg/types"
+	"github.com/connectedtechco/modelgene/providers/anthropic"
+	"github.com/connectedtechco/modelgene/providers/ollama"
 )
 
 type Client struct {

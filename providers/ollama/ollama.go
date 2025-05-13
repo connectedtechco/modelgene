@@ -3,8 +3,8 @@ package ollama
 import (
 	"context"
 
-	"modelgene"
-	"modelgene/pkg/types"
+	"github.com/connectedtechco/modelgene"
+	"github.com/connectedtechco/modelgene/pkg/types"
 
 	"github.com/ollama/ollama/api"
 )

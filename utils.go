@@ -2,7 +2,7 @@ package modelgene
 
 import (
 	"fmt"
-	"modelgene/pkg/types"
+	"github.com/connectedtechco/modelgene/pkg/types"
 )
 
 // --- Pointer Helpers ---
