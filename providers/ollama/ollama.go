@@ -2,6 +2,8 @@ package ollama
 
 import (
 	"context"
+	"strings"
+	"fmt"
 
 	"github.com/connectedtechco/modelgene"
 	"github.com/connectedtechco/modelgene/pkg/types"
@@ -81,4 +83,44 @@ func convertMessages(msgs []types.Message) []api.Message {
 		})
 	}
 	return out
+}
+
+func (p *Provider) Embed(ctx context.Context, req *api.EmbedRequest) (*types.APIResponse, error) {
+	if req.Model == "" {
+		return nil, modelgene.NewError(types.ProviderOllama, "embedding model name is required", nil)
+	}
+
+	resp, err := p.client.client.Embed(ctx, req)
+	if err != nil {
+		return nil, modelgene.NewError(types.ProviderOllama, "embedding error", err)
+	}
+
+	// * Serialize the embedding vector as a string (comma-separated)
+	vectorStrings := make([]string, len(resp.Embeddings))
+	for i, vec := range resp.Embeddings {
+		var parts []string
+		for _, v := range vec {
+			parts = append(parts, fmt.Sprintf("%f", v))
+		}
+		vectorStrings[i] = strings.Join(parts, ",")
+	}
+
+	// * store the vector string in `Message.Content`
+	choices := make([]types.Choice, len(vectorStrings))
+	for i, vs := range vectorStrings {
+		choices[i] = types.Choice{
+			Index: i,
+			Message: types.Message{
+				Role:    "assistant",
+				Content: vs,
+			},
+			FinishReason: "stop",
+		}
+	}
+
+	return &types.APIResponse{
+		Model:    req.Model,
+		Provider: types.ProviderOllama,
+		Choices:  choices,
+	}, nil
 }
