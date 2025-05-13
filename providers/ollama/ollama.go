@@ -48,11 +48,13 @@ func (p *Provider) Chat(ctx context.Context, req types.APIRequest) (*types.APIRe
 	var finishReason string
 
 	err := p.client.client.Chat(ctx, genReq, func(resp api.ChatResponse) error {
+		fmt.Println("Partial response:", resp)
 		fullResponse += resp.Message.Content
 		finishReason = resp.DoneReason
 		return nil
 	})
 	if err != nil {
+		fmt.Printf("Ollama Chat error: %v\n", err)
 		return nil, modelgene.NewError(types.ProviderOllama, "chat error", err)
 	}
 
