@@ -4,12 +4,12 @@ import "encoding/json"
 
 // Message represents a single message in the conversation history.
 type Message struct {
-	Role    string   `json:"role"`
-	Content string   `json:"content"`
-	Images  []string `json:"images,omitempty"`          // Used by Ollama
-	Name    *string  `json:"name,omitempty"`            // Used by OpenAI
-	ToolCallID *string `json:"tool_call_id,omitempty"` // Used by OpenAI
-	ToolCalls []ToolCall `json:"tool_calls,omitempty"` // Used by OpenAI
+	Role       string     `json:"role"`
+	Content    string     `json:"content"`
+	Images     []string   `json:"images,omitempty"`       // Used by Ollama
+	Name       *string    `json:"name,omitempty"`         // Used by OpenAI
+	ToolCallID *string    `json:"tool_call_id,omitempty"` // Used by OpenAI
+	ToolCalls  []ToolCall `json:"tool_calls,omitempty"`   // Used by OpenAI
 }
 
 // ToolCall represents a tool invocation requested by the model.
@@ -27,11 +27,11 @@ type ToolCallFunction struct {
 
 // Tool represents a tool/function definition provided to the model.
 type Tool struct {
-	Type        string            `json:"type,omitempty"`      // Used by OpenAI ("function")
-	Function    *FunctionDefinition `json:"function,omitempty"`  // Used by OpenAI
-	Name        *string           `json:"name,omitempty"`      // Used by Anthropic/Vertex AI
-	Description *string           `json:"description,omitempty"` // Used by Anthropic/Vertex AI
-	InputSchema json.RawMessage   `json:"input_schema,omitempty"`// Used by Anthropic/Vertex AI
+	Type        string              `json:"type,omitempty"`         // Used by OpenAI ("function")
+	Function    *FunctionDefinition `json:"function,omitempty"`     // Used by OpenAI
+	Name        *string             `json:"name,omitempty"`         // Used by Anthropic/Vertex AI
+	Description *string             `json:"description,omitempty"`  // Used by Anthropic/Vertex AI
+	InputSchema json.RawMessage     `json:"input_schema,omitempty"` // Used by Anthropic/Vertex AI
 }
 
 // FunctionDefinition describes a function for OpenAI tools.
@@ -43,8 +43,8 @@ type FunctionDefinition struct {
 
 // ToolChoice controls how the model uses tools.
 type ToolChoice struct {
-	Type     string            `json:"type"` // "none", "auto", "any", "tool", "function"
-	Name     *string           `json:"name,omitempty"`
+	Type     string              `json:"type"` // "none", "auto", "any", "tool", "function"
+	Name     *string             `json:"name,omitempty"`
 	Function *ToolChoiceFunction `json:"function,omitempty"` // OpenAI specific structure
 }
 
@@ -67,33 +67,34 @@ type SafetySetting struct {
 
 // APIRequest represents the consolidated parameters for calling various LLM APIs.
 type APIRequest struct {
-	Model            string    `json:"model"`
-	Messages         []Message `json:"messages,omitempty"`
-	Prompt           *string   `json:"prompt,omitempty"`   // Ollama generate endpoint
-	System           *string   `json:"system,omitempty"`  // System prompt
-	Context          *string   `json:"context,omitempty"` // Vertex AI context
-	MaxTokens        *int      `json:"max_tokens,omitempty"`
-	Temperature      *float64  `json:"temperature,omitempty"`
-	TopP             *float64  `json:"top_p,omitempty"`
-	TopK             *int      `json:"top_k,omitempty"`
-	StopSequences    []string  `json:"stop_sequences,omitempty"` // Renamed from 'stop' for clarity
-	PresencePenalty  *float64  `json:"presence_penalty,omitempty"`
-	FrequencyPenalty *float64  `json:"frequency_penalty,omitempty"`
-	Seed             *int      `json:"seed,omitempty"`
-	Stream           *bool     `json:"stream,omitempty"` // Although not used by Ollama now, keep for unified API
-	N                *int      `json:"n,omitempty"` // OpenAI/Vertex AI candidate count
-	ResponseFormat   *ResponseFormat `json:"response_format,omitempty"`
-	LogProbs         *bool     `json:"logprobs,omitempty"`
-	TopLogProbs      *int      `json:"top_logprobs,omitempty"` // OpenAI
-	Tools            []Tool      `json:"tools,omitempty"`
-	ToolChoice       *ToolChoice `json:"tool_choice,omitempty"`
-	LogitBias        map[string]int `json:"logit_bias,omitempty"` // OpenAI
-	User             *string        `json:"user,omitempty"`       // OpenAI
-	Metadata         map[string]interface{} `json:"metadata,omitempty"` // Anthropic
-	SafetySettings   []SafetySetting `json:"safety_settings,omitempty"` // Vertex AI
-	Echo             *bool           `json:"echo,omitempty"`            // Vertex AI
-	Template         *string                `json:"template,omitempty"`   // Ollama
-	Raw              *bool                  `json:"raw,omitempty"`        // Ollama
-	KeepAlive        *string                `json:"keep_alive,omitempty"` // Ollama
-	OllamaOptions    map[string]interface{} `json:"ollama_options,omitempty"` // Ollama catch-all
+	Model            string                 `json:"model"`
+	Messages         []Message              `json:"messages,omitempty"`
+	Input            string                 `json:"input,omitempty"` // for Ollama Embed()
+	Prompt           *string                `json:"prompt,omitempty"`  // Ollama generate endpoint
+	System           *string                `json:"system,omitempty"`  // System prompt
+	Context          *string                `json:"context,omitempty"` // Vertex AI context
+	MaxTokens        *int                   `json:"max_tokens,omitempty"`
+	Temperature      *float64               `json:"temperature,omitempty"`
+	TopP             *float64               `json:"top_p,omitempty"`
+	TopK             *int                   `json:"top_k,omitempty"`
+	StopSequences    []string               `json:"stop_sequences,omitempty"` // Renamed from 'stop' for clarity
+	PresencePenalty  *float64               `json:"presence_penalty,omitempty"`
+	FrequencyPenalty *float64               `json:"frequency_penalty,omitempty"`
+	Seed             *int                   `json:"seed,omitempty"`
+	Stream           *bool                  `json:"stream,omitempty"` // Although not used by Ollama now, keep for unified API
+	N                *int                   `json:"n,omitempty"`      // OpenAI/Vertex AI candidate count
+	ResponseFormat   *ResponseFormat        `json:"response_format,omitempty"`
+	LogProbs         *bool                  `json:"logprobs,omitempty"`
+	TopLogProbs      *int                   `json:"top_logprobs,omitempty"` // OpenAI
+	Tools            []Tool                 `json:"tools,omitempty"`
+	ToolChoice       *ToolChoice            `json:"tool_choice,omitempty"`
+	LogitBias        map[string]int         `json:"logit_bias,omitempty"`      // OpenAI
+	User             *string                `json:"user,omitempty"`            // OpenAI
+	Metadata         map[string]interface{} `json:"metadata,omitempty"`        // Anthropic
+	SafetySettings   []SafetySetting        `json:"safety_settings,omitempty"` // Vertex AI
+	Echo             *bool                  `json:"echo,omitempty"`            // Vertex AI
+	Template         *string                `json:"template,omitempty"`        // Ollama
+	Raw              *bool                  `json:"raw,omitempty"`             // Ollama
+	KeepAlive        *string                `json:"keep_alive,omitempty"`      // Ollama
+	OllamaOptions    map[string]interface{} `json:"ollama_options,omitempty"`  // Ollama catch-all
 }
