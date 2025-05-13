@@ -2,8 +2,8 @@ package ollama
 
 import (
 	"context"
-	"strings"
 	"fmt"
+	"strings"
 
 	"github.com/connectedtechco/modelgene"
 	"github.com/connectedtechco/modelgene/pkg/types"
@@ -85,12 +85,20 @@ func convertMessages(msgs []types.Message) []api.Message {
 	return out
 }
 
-func (p *Provider) Embed(ctx context.Context, req *api.EmbedRequest) (*types.APIResponse, error) {
+func (p *Provider) Embed(ctx context.Context, req *types.APIRequest) (*types.APIResponse, error) {
 	if req.Model == "" {
 		return nil, modelgene.NewError(types.ProviderOllama, "embedding model name is required", nil)
 	}
 
-	resp, err := p.client.client.Embed(ctx, req)
+	// * Convert types.APIRequest to api.EmbedRequest
+	embedReq := &api.EmbedRequest{
+		Model:   req.Model,
+		Input:   req.Input,
+		Options: req.OllamaOptions,
+	}
+
+	// * Call Ollama's embed endpoint
+	resp, err := p.client.client.Embed(ctx, embedReq)
 	if err != nil {
 		return nil, modelgene.NewError(types.ProviderOllama, "embedding error", err)
 	}
@@ -105,7 +113,7 @@ func (p *Provider) Embed(ctx context.Context, req *api.EmbedRequest) (*types.API
 		vectorStrings[i] = strings.Join(parts, ",")
 	}
 
-	// * store the vector string in `Message.Content`
+	// * Store each vector string as a Choice
 	choices := make([]types.Choice, len(vectorStrings))
 	for i, vs := range vectorStrings {
 		choices[i] = types.Choice{

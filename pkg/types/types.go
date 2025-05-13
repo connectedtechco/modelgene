@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-// * Provider enumerates the supported LLM providers.
+// Provider enumerates the supported LLM providers.
 type Provider string
 
 const (
